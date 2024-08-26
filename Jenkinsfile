@@ -29,20 +29,20 @@ pipeline {
 
         stage('Deploy to AWS EC2') {
             steps {
-                // script {
+                script {
                     withCredentials([file(credentialsId: 'FileKey', variable: 'secretFile')]) {
                         // SSH into the EC2 instance and deploy the container
                         sh '''
                         ssh -tt -o StrictHostKeyChecking=no -i $secretFile ${AWS_EC2_USER}@${AWS_EC2_HOST} << EOF
-                        sudo docker pull ${DOCKER_IMAGE}
-                        (sudo docker stop nodejs-app || true)
-                        (sudo docker rm nodejs-app || true)
-                        sudo docker run -d --name nodejs-app -p 80:80 ${DOCKER_IMAGE}
-                        exit
-                        EOF
-                        '''.stripIndent()
+                        sudo docker pull ${DOCKER_IMAGE};
+                        (sudo docker stop nodejs-app || true);
+                        (sudo docker rm nodejs-app || true);
+                        sudo docker run -d --name nodejs-app -p 80:80 ${DOCKER_IMAGE};
+                        exit;
+                        << EOF
+                        '''
                     }
-                // }
+                }
             }
         }
     }
