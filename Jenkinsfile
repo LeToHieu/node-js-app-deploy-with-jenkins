@@ -50,7 +50,7 @@ pipeline {
                         '''
                         // sh 'ansible-playbook -i hosts --private-key secretFile playbook.yml'
                     }
-                    sh "echo done"
+                    sh "docker --version"
                 }
             }
         }
