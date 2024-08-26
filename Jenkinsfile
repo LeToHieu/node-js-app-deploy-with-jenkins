@@ -45,9 +45,8 @@ pipeline {
                         sh 'chmod 400 secretFile '
                         SSH into the EC2 instance and deploy the container
                         sh '''
-                        ssh -o StrictHostKeyChecking=no -tt -i secretFile ${AWS_EC2_USER}@${AWS_EC2_HOST} <<EOF
+                        ssh -o StrictHostKeyChecking=no -tt -i secretFile ${AWS_EC2_USER}@${AWS_EC2_HOST}
                             docker --version
-                        EOF
                         '''
                         // sh 'ansible-playbook -i hosts --private-key secretFile playbook.yml'
                     }
