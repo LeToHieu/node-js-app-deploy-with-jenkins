@@ -46,10 +46,7 @@ pipeline {
                         SSH into the EC2 instance and deploy the container
                         sh '''
                         ssh -o StrictHostKeyChecking=no -tt -i secretFile ${AWS_EC2_USER}@${AWS_EC2_HOST} <<EOF
-                            sudo docker pull ${DOCKER_IMAGE}
-                            sudo docker stop nodejs-app || true
-                            sudo docker rm nodejs-app || true
-                            sudo docker run -d --name nodejs-app -p 80:80 ${DOCKER_IMAGE}
+                            docker --version
                         EOF
                         '''
                         // sh 'ansible-playbook -i hosts --private-key secretFile playbook.yml'
