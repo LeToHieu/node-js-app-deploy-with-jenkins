@@ -39,7 +39,7 @@ pipeline {
                         (sudo docker rm nodejs-app || true)
                         sudo docker run -d --name nodejs-app -p 80:80 ${DOCKER_IMAGE}
                         exit
-                        << EOF
+                        EOF
                         '''.stripIndent()
                     }
                 // }
