@@ -44,15 +44,15 @@ pipeline {
                         sh "cp /$secretFile secretFile"
                         sh 'chmod 400 secretFile '
                         // SSH into the EC2 instance and deploy the container
-                        sh '''
-                        ssh -tt -i secretFile ${AWS_EC2_USER}@${AWS_EC2_HOST} <<EOF
-                            docker pull ${DOCKER_IMAGE}
-                            docker stop nodejs-app || true
-                            docker rm nodejs-app || true
-                            docker run -d --name nodejs-app -p 80:80 ${DOCKER_IMAGE}
-                        EOF
-                        '''
-
+                        // sh '''
+                        // ssh -tt -i secretFile ${AWS_EC2_USER}@${AWS_EC2_HOST} <<EOF
+                        //     docker pull ${DOCKER_IMAGE}
+                        //     docker stop nodejs-app || true
+                        //     docker rm nodejs-app || true
+                        //     docker run -d --name nodejs-app -p 80:80 ${DOCKER_IMAGE}
+                        // EOF
+                        // '''
+                        sh 'ansible-playbook -i hosts --private-key secretFile playbook.yml'
                     }
                 }
             }
