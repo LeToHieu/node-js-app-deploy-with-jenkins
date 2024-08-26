@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'khinesss/nodejs-app:latest'  // image name
         AWS_EC2_USER = 'ec2-user'                   //EC2 instance user
-        AWS_EC2_HOST = 'your-ec2-host'              //instance IP/hostname
+        AWS_EC2_HOST = 'ec2-3-27-213-114.ap-southeast-2.compute.amazonaws.com'              //instance IP/hostname
         SECRET_FILE = credentials('FileKey')      //pem file
     }
 
