@@ -5,7 +5,7 @@ pipeline {
         DOCKER_IMAGE = 'khinesss/nodejs-app:latest'  // image name
         AWS_EC2_USER = 'ec2-user'                   //EC2 instance user
         AWS_EC2_HOST = 'ec2-3-27-213-114.ap-southeast-2.compute.amazonaws.com'              //instance IP/hostname
-        SECRET_FILE = credentials('FileKey')      //pem file
+        // SECRET_FILE = credentials('FileKey')      //pem file
     }
 
     stages {
@@ -30,15 +30,17 @@ pipeline {
         stage('Deploy to AWS EC2') {
             steps {
                 script {
-                    // SSH into the EC2 instance and deploy the container
-                    sh '''
-                    ssh -tt -i ${SECRET_FILE} ${AWS_EC2_USER}@${AWS_EC2_HOST} <<EOF
-                        docker pull ${DOCKER_IMAGE}
-                        docker stop nodejs-app || true
-                        docker rm nodejs-app || true
-                        docker run -d --name nodejs-app -p 80:80 ${DOCKER_IMAGE}
-                    EOF
-                    '''
+                    withCredentials([file(credentialsId: 'FileKey', variable: 'secretFile')]) {
+                        // SSH into the EC2 instance and deploy the container
+                        sh '''
+                        ssh -tt -i ${secretFile} ${AWS_EC2_USER}@${AWS_EC2_HOST} <<EOF
+                            docker pull ${DOCKER_IMAGE}
+                            docker stop nodejs-app || true
+                            docker rm nodejs-app || true
+                            docker run -d --name nodejs-app -p 80:80 ${DOCKER_IMAGE}
+                        EOF
+                        '''
+                    }
                 }
             }
         }
