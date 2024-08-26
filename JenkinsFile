@@ -20,26 +20,28 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    sh 'docker push ${DOCKER_IMAGE}'
+                    withDockerRegistry(credentialsId: 'DockerHub', url: 'https://index.docker.io/v1/'   ){
+                        sh 'docker push ${DOCKER_IMAGE}'
+                    }
                 }
             }
         }
 
-        stage('Deploy to AWS EC2') {
-            steps {
-                script {
-                    // SSH into the EC2 instance and deploy the container
-                    sh '''
-                    ssh -i ${SSH_KEY_PATH} ${AWS_EC2_USER}@${AWS_EC2_HOST} <<EOF
-                        docker pull ${DOCKER_IMAGE}
-                        docker stop nodejs-app || true
-                        docker rm nodejs-app || true
-                        docker run -d --name nodejs-app -p 80:80 ${DOCKER_IMAGE}
-                    EOF
-                    '''
-                }
-            }
-        }
+        // stage('Deploy to AWS EC2') {
+        //     steps {
+        //         script {
+        //             // SSH into the EC2 instance and deploy the container
+        //             sh '''
+        //             ssh -i ${SSH_KEY_PATH} ${AWS_EC2_USER}@${AWS_EC2_HOST} <<EOF
+        //                 docker pull ${DOCKER_IMAGE}
+        //                 docker stop nodejs-app || true
+        //                 docker rm nodejs-app || true
+        //                 docker run -d --name nodejs-app -p 80:80 ${DOCKER_IMAGE}
+        //             EOF
+        //             '''
+        //         }
+        //     }
+        // }
     }
 
     post {
