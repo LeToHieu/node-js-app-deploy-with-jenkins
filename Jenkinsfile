@@ -33,12 +33,11 @@ pipeline {
                     withCredentials([file(credentialsId: 'FileKey', variable: 'secretFile')]) {
                         // SSH into the EC2 instance and deploy the container
                         sh '''
-                        ssh -tt -o StrictHostKeyChecking=no -i $secretFile ${AWS_EC2_USER}@${AWS_EC2_HOST} <<EOF
+                        ssh -tt -o StrictHostKeyChecking=no -i $secretFile ${AWS_EC2_USER}@${AWS_EC2_HOST}
                             docker pull ${DOCKER_IMAGE}
                             docker stop nodejs-app || true
                             docker rm nodejs-app || true
                             docker run -d --name nodejs-app -p 80:80 ${DOCKER_IMAGE}
-                        EOF
                         '''
                     }
                 }
