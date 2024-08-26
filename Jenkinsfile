@@ -29,7 +29,7 @@ pipeline {
 
         stage('Deploy to AWS EC2') {
             steps {
-                script {
+                // script {
                     withCredentials([file(credentialsId: 'FileKey', variable: 'secretFile')]) {
                         // SSH into the EC2 instance and deploy the container
                         sh '''
@@ -40,9 +40,9 @@ pipeline {
                         sudo docker run -d --name nodejs-app -p 80:80 ${DOCKER_IMAGE}
                         exit
                         << EOF
-                        '''
+                        '''.stripIndent()
                     }
-                }
+                // }
             }
         }
     }
