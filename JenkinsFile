@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'khinesss/nodejs-app:latest'  // Replace with your Docker image name
-        AWS_EC2_USER = 'ec2-user'                   // Replace with your EC2 instance user
-        AWS_EC2_HOST = 'your-ec2-host'              // Replace with your EC2 instance IP/hostname
-        SSH_KEY_PATH = '/path/to/your/private/key'  // Replace with the path to your private SSH key
+        DOCKER_IMAGE = 'khinesss/nodejs-app:latest'  // image name
+        AWS_EC2_USER = 'ec2-user'                   //EC2 instance user
+        AWS_EC2_HOST = 'your-ec2-host'              //instance IP/hostname
+        SECRET_FILE = credentials('FileKey')      //pem file
     }
 
     stages {
@@ -27,21 +27,21 @@ pipeline {
             }
         }
 
-        // stage('Deploy to AWS EC2') {
-        //     steps {
-        //         script {
-        //             // SSH into the EC2 instance and deploy the container
-        //             sh '''
-        //             ssh -i ${SSH_KEY_PATH} ${AWS_EC2_USER}@${AWS_EC2_HOST} <<EOF
-        //                 docker pull ${DOCKER_IMAGE}
-        //                 docker stop nodejs-app || true
-        //                 docker rm nodejs-app || true
-        //                 docker run -d --name nodejs-app -p 80:80 ${DOCKER_IMAGE}
-        //             EOF
-        //             '''
-        //         }
-        //     }
-        // }
+        stage('Deploy to AWS EC2') {
+            steps {
+                script {
+                    // SSH into the EC2 instance and deploy the container
+                    sh '''
+                    ssh -i ${SECRET_FILE} ${AWS_EC2_USER}@${AWS_EC2_HOST} <<EOF
+                        docker pull ${DOCKER_IMAGE}
+                        docker stop nodejs-app || true
+                        docker rm nodejs-app || true
+                        docker run -d --name nodejs-app -p 80:80 ${DOCKER_IMAGE}
+                    EOF
+                    '''
+                }
+            }
+        }
     }
 
     post {
