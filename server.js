@@ -17,30 +17,4 @@ app.get('/', (req, res) => {
   res.sendFile(filePath);
 });
 
-app.get('/exists', (req, res) => {
-  const filePath = path.join(__dirname, 'pages', 'exists.html');
-  res.sendFile(filePath);
-});
-
-app.post('/create', async (req, res) => {
-  const title = req.body.title;
-  const content = req.body.text;
-
-  const adjTitle = title.toLowerCase();
-
-  const tempFilePath = path.join(__dirname, 'temp', adjTitle + '.txt');
-  const finalFilePath = path.join(__dirname, 'feedback', adjTitle + '.txt');
-
-  await fs.writeFile(tempFilePath, content);
-  exists(finalFilePath, async (exists) => {
-    if (exists) {
-      res.redirect('/exists');
-    } else {
-      await fs.copyFile(tempFilePath, finalFilePath);
-      await fs.unlink(tempFilePath);
-      res.redirect('/');
-    }
-  });
-});
-
 app.listen(80);
